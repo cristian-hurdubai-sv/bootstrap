@@ -9,5 +9,6 @@ nav:
     - Getting Started: getting-started.md
     - Dockerization: dockerisation.md
     - Docker: docker.md
+    - Dockerization: dockerisation.md
   - Plugins: 
     - SonarQube: sonarqube.md
