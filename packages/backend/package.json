@@ -21,7 +21,6 @@
     "@backstage/catalog-client": "^1.1.0",
     "@backstage/catalog-model": "^1.1.1",
     "@backstage/config": "^1.0.2",
-    "@backstage/plugin-app-backend": "^0.3.36",
     "@backstage/plugin-auth-backend": "^0.16.0",
     "@backstage/plugin-auth-node": "^0.2.5",
     "@backstage/plugin-catalog-backend": "^1.4.0",

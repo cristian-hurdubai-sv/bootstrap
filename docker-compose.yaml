@@ -24,3 +24,16 @@ services:
     # NOT RECOMMENDED for a production environment. Trusts all incomming
     # connections.
       POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  frontend:
+    image: backstage-frontend
+    ports:
+      - "3000:80"
+
+volumes:
+  db-data:
+    driver: local
