@@ -14,9 +14,24 @@ FROM node:16-bullseye-slim
 # Install sqlite3 dependencies. You can skip this if you don't use sqlite3 in the image,
 # in which case you should also move better-sqlite3 to "devDependencies" in package.json.
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends libsqlite3-dev python3 build-essential && \
+    apt-get install -y --no-install-recommends libsqlite3-dev python3 python3-pip build-essential curl && \
     rm -rf /var/lib/apt/lists/* && \
     yarn config set python /usr/bin/python3
+
+# Download plantuml file, Validate checksum & Move plantuml file
+RUN curl -o plantuml.jar -L http://sourceforge.net/projects/plantuml/files/plantuml.1.2022.4.jar/download && echo "246d1ed561ebbcac14b2798b45712a9d018024c0  plantuml.jar" | sha1sum -c - && mv plantuml.jar /opt/plantuml.jar
+
+# install mkDocs plugin
+RUN pip3 install mkdocs-techdocs-core==1.1.7
+
+# Create script to call plantuml.jar from a location in path
+#   When adding TechDocs to the Backstage Backend container, avoid this
+#   error (OSError: [Errno 8] Exec format error: 'plantuml') by using the
+#   following RUN command instead:
+#   RUN echo '#!/bin/sh\n\njava -jar '/opt/plantuml.jar' ${@}' >> /usr/local/bin/plantuml
+RUN echo $'#!/bin/sh\n\njava -jar '/opt/plantuml.jar' ${@}' >> /usr/local/bin/plantuml
+RUN chmod 755 /usr/local/bin/plantuml
+### END mkDocs
 
 # From here on we use the least-privileged `node` user to run the backend.
 USER node
