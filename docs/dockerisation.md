@@ -6,13 +6,13 @@ description: How to split the app's packages into their own docker containers
 ---
 ## Introduction
 By default, a backstage scaffolded application comes packed with 2 packages: `app (frontend)` and `backend`, glued together into 1 mono-repo app.
-The goal with this documentation (tutorial), is to split in the end each workspace into its own `Docker container` and run the application thorugh docker. Thus in the end we will raise 3 containers:
+The goal with this documentation (tutorial), is to split in the end each workspace into its own `Docker container` and run the application thorugh docker. Thus in the end we will raise 3 containers:  
 - backstage_frontend
 - backstage
 - postgres
 
 ## Prerequisites
-You will need the following:
+You will need the following:  
 - `Docker` and `Docker Compose` installed and running on your local machine.
 - `NodeJS` installed on your local machine.
 - `Yarn` package manager installed
@@ -78,22 +78,23 @@ yarn workspace app build --config ../../app.config.yaml
 and then create a `Docker image`
 
 ```shell
-docker build -t backstage-frontend -f Dockerfile.hostbuild
+docker build -t backstage-frontend -f Dockerfile.hostbuild .
 ```
 
 ## Step5 - Create the backstage (backend) image
-For this, we already have a `Dockerfile` in `packages/backend` folder and we just need to run the build-image command
+For this, we already have a `Dockerfile` in `packages/backend` folder and we just need to run the build and build-image command
 
 ```shell
+yarn workspace backend build
 yarn workspace backend build-image
 ```
 
-### !Important
+#### !Important
 If we'll try now to run the newly created `backstage` image, things will fail because the Backstage backend cannot connect to port `5432`. Backstage needs to connect to the database in order to store catalog items and other data. It expects to find PostgreSQL running on port 5432. When it can’t, it fails and bails out.
 
 To fix this, will use Docker Compose to make PostgreSQL available.
 
-## Step6 Get postgres image
+## Step6 - Get postgres image
 ```shell
 docker pull postgres
 ```
@@ -142,10 +143,10 @@ volumes:
 #### Note
 This is a simple example of `docker-compose.yaml`
 
-### !Important
+#### !Important
 A `docker` volume is attached to db instance. This will make the database persistent once the docker containers are deleted.
 
-### Step8 - Putting it all together
+## Step8 - Putting it all together
 Once you’ve done that, you can use Docker Compose to start all these Docker images.
 
 ```shell

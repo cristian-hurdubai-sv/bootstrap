@@ -2,6 +2,9 @@ version: '3.8'
 services:
   backstage:
     image: backstage
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile
     environment:
       # This value must match the name of the postgres configuration block.
       POSTGRES_PORT: ${POSTGRES_PORT}
@@ -31,6 +34,9 @@ services:
 
   frontend:
     image: backstage-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile.hostbuild
     ports:
       - "3000:80"
 
