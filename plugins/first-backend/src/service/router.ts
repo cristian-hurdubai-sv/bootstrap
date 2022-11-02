@@ -51,9 +51,14 @@ export async function createRouter(
     response.send(data);
   });
 
-  router.get('/users', async (_, response) => {
-    const data = await dbHandler.getAll();
-    response.send(data);
+  router.get('/users', async (req, response) => {
+    try {
+      const options = req.query;
+      const data = await dbHandler.getAllByFilter(options);
+      response.send(data);
+    } catch (err) {
+      response.status(500).send({status: 'nok', message: "An error has occured"});
+    }
   });
 
   router.get('/users/:id', async (req, response) => {

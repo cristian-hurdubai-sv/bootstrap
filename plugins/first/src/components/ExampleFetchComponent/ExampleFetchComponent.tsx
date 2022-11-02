@@ -23,7 +23,7 @@ type DenseTableProps = {
   users: RandomUserItem[];
 };
 
-const PAGE_SIZE = 25;
+const PAGE_SIZE = 30;
 
 export const DenseTable = ({ users }: DenseTableProps) => {
   const classes = useStyles();
@@ -88,7 +88,7 @@ export const ExampleFetchComponent = () => {
       const pageSize = query?.pageSize ?? PAGE_SIZE;
       result = await firstApi.getAll({
         offset: page * pageSize,
-        limit: pageSize,
+        limit: 10000, // pageSize,
         orderBy:
           query?.orderBy &&
           ({

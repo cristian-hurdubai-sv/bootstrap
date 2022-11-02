@@ -28,7 +28,6 @@ export class FirstClient implements IFirstApi {
     const { token } = await this.identityApi.getCredentials();
 
     const query = new URLSearchParams();
-    console.log(options)
 
     if (typeof offset === 'number') {
       query.set('offset', String(offset));

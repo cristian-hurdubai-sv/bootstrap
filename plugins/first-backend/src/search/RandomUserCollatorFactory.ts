@@ -21,6 +21,7 @@ export class RandomUserCollatorFactory implements RandomUserDocument {
     public title: string = "";
     public text: string = "";
     public location: string = "";
+    public bacthSize: number = 500;
 
     private readonly baseUrl?: string;
     private readonly logger: Logger;
@@ -45,19 +46,31 @@ export class RandomUserCollatorFactory implements RandomUserDocument {
             return;
         }
 
-        const response = await fetch(this.baseUrl);
-        const data = await response.json();
+        let stillHasData: boolean = true;
+        let offset = 0;
 
-        for (const user of data) {
-            yield {
-                title: user.email,
-                text: `${user.first_name} ${user.last_name}`,
-                location: `/first?id=${user.id}`,
-                id: user.id,
-                firstName: user.first_name,
-                lastName: user.last_name,
-                email: user.email,
-            };
+        while (stillHasData) {
+            const query = new URLSearchParams();
+            query.set('offset', String(offset));
+            query.set('limit', String(this.bacthSize));
+
+            const response = await fetch(this.baseUrl);
+            const data = await response.json();
+
+            stillHasData = data.length === this.bacthSize;
+            offset += data.length;
+            
+            for (const user of data) {
+                yield {
+                    title: user.email,
+                    text: `${user.first_name} ${user.last_name}`,
+                    location: `/first?id=${user.id}`,
+                    id: user.id,
+                    firstName: user.first_name,
+                    lastName: user.last_name,
+                    email: user.email,
+                };
+            }
         }
     }
 }
