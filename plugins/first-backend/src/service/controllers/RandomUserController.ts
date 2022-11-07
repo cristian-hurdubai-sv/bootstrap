@@ -2,10 +2,10 @@ import { RouterOptions } from '../router';
 import { DatabaseRandowUserStore } from '../../database';
 import { RandomUserRow, RawUser } from '../../database/types';
 import fetch from 'cross-fetch';
+import {Request, Response} from 'express';
 
 export class RandomUserController {
   private constructor(
-    private options: RouterOptions,
     private dbHandler: DatabaseRandowUserStore,
   ) {
     this.getUsers = this.getUsers.bind(this);
@@ -16,10 +16,10 @@ export class RandomUserController {
 
   public static async fromConfig(options: RouterOptions) {
     const dbHandler = await DatabaseRandowUserStore.create(options.database);
-    return new RandomUserController(options, dbHandler);
+    return new RandomUserController(dbHandler);
   }
 
-  public async getUsers(req, response, _) {
+  public async getUsers(req: Request, response: Response) {
     try {
       const userId: string = req.params.id || '';
       let data: RandomUserRow | RandomUserRow[];
@@ -36,7 +36,7 @@ export class RandomUserController {
     }
   }
 
-  public async getRandomUsers(_, response) {
+  public async getRandomUsers(_: Request, response: Response) {
     try {
       const results = await fetch('https://randomuser.me/api/?results=50');
       const data = await results.json();
@@ -51,9 +51,8 @@ export class RandomUserController {
     }
   }
 
-  public async deleteUser(req, response, _) {
+  public async deleteUser(req: Request, response: Response) {
     try {
-      console.log('GGG');
       const userId: string = req.params.id || '';
       await this.dbHandler.delete(userId);
       response.status(204).send();
@@ -62,7 +61,7 @@ export class RandomUserController {
     }
   }
 
-  public async addUser(req, response, _) {
+  public async addUser(req: Request, response: Response) {
     // we should get a same data structure as when getting random users
     const rawUsers = [req.body];
 
