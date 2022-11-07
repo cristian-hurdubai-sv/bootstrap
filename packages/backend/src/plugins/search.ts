@@ -53,7 +53,7 @@ export default async function createPlugin(
     }),
   });
 
-    // collator for RandomUsers
+  // collator for RandomUsers
   indexBuilder.addCollator({
     schedule,
     factory: RandomUserCollatorFactory.fromConfig(env.config, {

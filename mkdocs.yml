@@ -13,5 +13,6 @@ nav:
     - DataBase: database.md
   - Plugins: 
     - Creating Plugins: plugins/creating-a-plugin.md
+    - Adding Search functionality: plugins/add-search-to-plugin.md
     - SonarQube: plugins/sonarqube
     - Search: plugins/search.md

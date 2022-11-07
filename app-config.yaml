@@ -1,5 +1,5 @@
 app:
-  title: Scaffolded Backstage App
+  title: Backstage POC
   baseUrl: http://localhost:3000
 
 organization:

@@ -33,7 +33,7 @@ export class RandomUserCollatorFactory implements RandomUserDocument {
 
     public static fromConfig(config: Config, options: RandomUserCollatorFactoryOptions): RandomUserCollatorFactory {
         const baseUrl = config.getOptionalString('first.baseUrl') || 'http://localhost:7007/api/first';
-        return new RandomUserCollatorFactory({ ...options, baseUrl: `${baseUrl}/get-all`});
+        return new RandomUserCollatorFactory({ ...options, baseUrl: `${baseUrl}/users`});
     }
 
     public async getCollator(): Promise<Readable> {

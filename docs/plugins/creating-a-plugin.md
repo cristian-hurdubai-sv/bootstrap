@@ -410,7 +410,7 @@ and add the dependency inside /packages/backedn/package.json
 
 then go to `packages/backend/src/index.ts` to make it discovarable
 ```typescript
-import randomUser from './plugins/random-user-backend';
+import randomUser from './plugins/random-user';
 // ....
 
     const randomUserEnv = useHotMemoize(module, () => createEnv('randomUser'));
@@ -615,7 +615,7 @@ export interface IRandomUserApi {
  * @public
  */
 export const randomUserApiRef = createApiRef<IRandomUserApi>({
-  id: 'plugin.randomUser.api',
+  id: 'plugin.random-user.api',
 });
 ```
 
@@ -786,3 +786,142 @@ export const getRandomUserData = () => {
 
 ```
 
+## III. Expose into catalog
+Since we created these 2 plugins we need to expose the API using openAPI schema and to link this 2 plugins together in order to display inside Catalog
+Add the following file `plugins/random-user/catalog-info.yaml` 
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: random-user-plugin
+  description: A demo plugin
+  # Example for optional annotations
+  annotations:
+    github.com/project-slug: ./
+spec:
+  type: website
+  lifecycle: experimental
+  owner: guest
+  dependsOn:
+    - api:random-user-backend-plugin
+```
+
+and as well the file `plugins/random-user-backend/catalog-info.yaml`
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: random-user-backend-plugin
+  description: A demo API that uses an external data source to store it in the database and expose further in the UI
+  # Example for optional annotations
+  annotations:
+    github.com/project-slug: ./
+spec:
+  type: openapi
+  lifecycle: experimental
+  owner: guest
+  definition: |
+    openapi: "3.0.0"
+    info:
+      version: 0.1.0
+      title: RandomUser backend API
+      license:
+        name: BSD
+    servers:
+      - url: http://localhost:7007/api/random-user/
+    paths:
+      /get-random-users:
+        put:
+          description: Get a list of random users from randomuser.me
+          responses:
+            '200':
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/RandomUsers'
+      /users:
+        get:
+          description: Get a list of users from database
+          responses:
+            '200':
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/RandomUsers'
+
+      /users/{id}:
+        get:
+          description: Get one user from database
+          parameters:
+            - name: id
+              in: path
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: 0d473b1e-5d74-4676-8d7e-be6156dd7e9d
+          responses:
+            '200':
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/RandomUser'
+            '404':
+              description: Not Found
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ErrorModel'
+        delete:
+          description: Delete one user from database
+          parameters:
+            - name: id
+              in: path
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: 0d473b1e-5d74-4676-8d7e-be6156dd7e9d
+          responses:
+            '204':
+              descrition: delete perfomed successfully
+            '404':
+              description: Not Found
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ErrorModel'
+    components:
+      schemas:
+        RandomUsers:
+          type: array
+          items:
+            $ref: "#/components/schemas/RandomUser"
+        RandomUser:
+          type: object
+          properties:
+            id:
+              type: string
+              description: RandomUser ID
+              example: "0d473b1e-5d74-4676-8d7e-be6156dd7e9d"
+            first_name:
+              type: string
+              description: User first name
+              example: Alexander
+            last_name:
+              type: string
+              description: User last name
+              example: TheGreat
+            email:
+              type: string
+        ErrorModel:
+          type: object
+          properties:
+            status:
+              type: string
+              example: "ok | nok"
+            message:
+              type: string
+```
