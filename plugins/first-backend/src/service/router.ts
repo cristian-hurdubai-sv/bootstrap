@@ -16,11 +16,9 @@
 
 import { errorHandler, PluginDatabaseManager } from '@backstage/backend-common';
 import express from 'express';
-import fetch from 'cross-fetch';
 import Router from 'express-promise-router';
 import { Logger } from 'winston';
-import { DatabaseRandowUserStore } from '../database';
-import { RawUser } from '../database/types';
+import { RandomUserController } from './controllers/RandomUserController';
 
 export interface RouterOptions {
   logger: Logger;
@@ -34,52 +32,17 @@ export async function createRouter(
   const router = Router();
   router.use(express.json());
 
-  const dbHandler: DatabaseRandowUserStore = await DatabaseRandowUserStore.create(options.database);
+  const randomUserController = await RandomUserController.fromConfig(options);
+  
+  router.put('/get-random-users', await randomUserController.getRandomUsers);
+  
+  router.get('/users', await randomUserController.getUsers);
 
-  router.put('/get-random-users', async (_, response) => {
-    const results = await fetch('https://randomuser.me/api/?results=50');
-    const data = await results.json();
-    // response.send(data.results);
-    await dbHandler.transaction( async tx => {
-      await dbHandler.insert(tx, data.results as RawUser[]);
-    })
-    response.send(data.results);
-  });
+  router.get('/users/:id', await randomUserController.getUsers);
 
-  router.get('/get-all', async (_, response) => {
-    const data = await dbHandler.getAll();
-    response.send(data);
-  });
+  router.delete('/users/:id', await randomUserController.deleteUser);
 
-  router.get('/users', async (req, response) => {
-    try {
-      const options = req.query;
-      const data = await dbHandler.getAllByFilter(options);
-      response.send(data);
-    } catch (err) {
-      response.status(500).send({status: 'nok', message: "An error has occured"});
-    }
-  });
-
-  router.get('/users/:id', async (req, response) => {
-    try {
-      const userId: string = req.params.id || "";
-      const data = await dbHandler.get(userId);
-      response.send(data);
-    } catch (err) {
-      response.status(404).send({status: 'nok', message: "User not found"});
-    }
-  });
-
-  router.delete('/users/:id', async (req, response) => {
-    try {
-      const userId: string = req.params.id || "";
-      await dbHandler.delete(userId);
-      response.status(204).send();
-    } catch (err) {
-      response.status(404).send({status: 'nok', message: "User not found"});
-    }
-  });
+  router.post('/users', await randomUserController.addUser);
 
 
   router.get('/health', (_, response) => {

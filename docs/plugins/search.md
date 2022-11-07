@@ -12,6 +12,15 @@ Backstage supports 3 search engines by default:
 
 ## Lunr
 Lunr engine is enabled by default so if you want to use the other engines you need to make aditional configurations.
+While this is a good engine to use on a smaller scale and for local development (to avoid having to set up a search engine instance separately), it also has its limitations such as:
+
+1. Lunr does not scale well. Horizontally scaled deployments of Backstage and/or Backstage Search backend using Lunr result in either duplicated indexing processes and indices or inconsistent index state across nodes.
+
+2. Lunr’s filter functionality is limited, especially for logical AND/OR operators.
+
+3. Lunr has a smaller community than `Elasticsearch`, which could mean that adopters relying on it will have less by way of resources for iterating on and improving search.
+
+Therefore in a production environment it is recommended to use something else like `Elasticsearch` or `Postgres`
 
 ## Postgres
 The Postgres based search engine only requires that postgres being configured as the database engine for Backstage. Therefore it targets setups that want to avoid maintaining another external service like elastic search. The search provides **decent results** and performs well with **ten thousands of indexed documents**. The connection to postgres is established via the database manager also used by other plugins.
@@ -48,7 +57,8 @@ search:
       fragmentDelimiter: ' ... ' # Delimiter string used to concatenate fragments. Defaults to " ... ".
 ```
 
-**Note:** the highlight search term feature uses `ts_headline` which has been known to potentially impact performance. You only need this minimal config to disable it should you have issues:
+**Note:** the highlight search term feature uses `ts_headline` which has been known to potentially impact performance. You only need this minimal config to disable it should you have issues: `useHighlight: false`
+
 
 ## Tech Stack
 
@@ -61,3 +71,5 @@ search:
 | Backend Plugin Library    | @backstage/plugin-search-backend-node                 |
 | Backend Plugin Module     | @backstage/plugin-search-backend-module-elasticsearch |
 | Backend Plugin Module     | @backstage/plugin-search-backend-module-pg            |
+
+** The module `@backstage/plugin-search-backend-module-elasticsearch` is maintained by the search team whereas `@backstage/plugin-search-backend-module-pg` is being maintained by the community. For the POC we will go with postgresql;

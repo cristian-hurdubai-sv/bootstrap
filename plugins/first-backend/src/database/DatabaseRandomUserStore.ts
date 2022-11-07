@@ -11,6 +11,7 @@ import { applyDatabaseMigrations } from './migrations';
 
 export class DatabaseRandowUserStore {
   private constructor(private readonly db: Knex) {}
+  private readonly LIMIT = 500;
 
   public static async create(
     database: PluginDatabaseManager,
@@ -55,9 +56,8 @@ export class DatabaseRandowUserStore {
   public async getAllByFilter(options: apiOptions): Promise<RandomUserRow[]> {
     const query = this.db('random_user')
         .select('*')
-        .limit(options.limit || 0, {skipBinding: true})
+        .limit(options.limit || this.LIMIT, {skipBinding: true})
         .offset(options.offset || 0);
-    
     return await query;
   }
 

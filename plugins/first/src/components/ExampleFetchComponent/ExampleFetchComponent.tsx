@@ -71,8 +71,20 @@ export const DenseTable = ({ users }: DenseTableProps) => {
 };
 
 export const ExampleFetchComponent = () => {
+  const { value, loading, error } = getApiData();
+
+  if (loading) {
+    return <Progress />;
+  } else if (error) {
+    return <Alert severity="error">{error.message}</Alert>;
+  }
+
+  return <DenseTable users={value?.data || []} />;
+};
+
+export const getApiData = () => {
   const firstApi = useApi(firstApiRef);
-  const { value, loading, error } = useAsync(async () => {
+  return useAsync(async () => {
     const searchParams = new URLSearchParams(window.location.search);
     const query: any = {};
     // Display the key/value pairs
@@ -108,12 +120,4 @@ export const ExampleFetchComponent = () => {
       page: Math.floor(result.offset / result.limit),
     };
   }, []);
-
-  if (loading) {
-    return <Progress />;
-  } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
-  }
-
-  return <DenseTable users={value?.data || []} />;
-};
+}
