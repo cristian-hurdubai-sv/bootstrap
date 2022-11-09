@@ -9,15 +9,17 @@ description: Short conclusion points about backstage
     - Backstage can be described as a framework for building various applications.
     - It can be considered a tool that helps create and manage software projects.
     - It can be extended with plugins built by the community and as well built internally.
+
 ### 2. What does backstage do, achieve?
 It provides a set of common apis and it has a pluggable architecture that helps expanding its functionality even further.
-### 3. Advantages
+
+### 3. Key points
     - IDP - Internal Developer Portal: It unifies all your toolings, services, app, docs, data into one single portal.
     - Presents a summary of everyhthing available in your ecosystem, regardless of what individual components are running
     - Let company employees focus on what they do best.
 
-### 4. Why backstage?
-    1. Speed:
+### 4. Why considering backstage?
+    1. Velocity:
         - Spawning a boilerplate application for a new starting team to develop software. (create new service, API, website etc)
         - Getting people fast on track with what current application is doing (All documentation is available into one single point of contact; there is no need to "search" for in different places)
         - Checking logs; verify pipulines...
@@ -27,7 +29,7 @@ It provides a set of common apis and it has a pluggable architecture that helps 
     3. Organized:
         - Getting to know what teams are responsible for which software is a always good thing.
 
-### 5. What are the main features of backstage
+### 5. What are the main features of backstage out of the box
     - Creates new software in a matter of seconds (templating)
     - Manage all software in one centralized portal (catalog)
     - Explore the entire ecosystem of an "entity" (catalog/entity details).

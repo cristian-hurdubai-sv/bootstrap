@@ -54,7 +54,7 @@ export class RandomUserCollatorFactory implements RandomUserDocument {
             query.set('offset', String(offset));
             query.set('limit', String(this.bacthSize));
 
-            const response = await fetch(this.baseUrl);
+            const response = await fetch(`${this.baseUrl}?${query.toString()}`);
             const data = await response.json();
 
             stillHasData = data.length === this.bacthSize;
