@@ -6,10 +6,13 @@ plugins:
 
 nav:
   - Backstage:
+    - Definitions: backstage-definition.md
     - Getting Started: getting-started.md
     - Docker: docker.md
     - Dockerization: dockerisation.md
     - DataBase: database.md
   - Plugins: 
+    - Creating Plugins: plugins/creating-a-plugin.md
+    - Adding Search functionality: plugins/add-search-to-plugin.md
     - SonarQube: plugins/sonarqube
     - Search: plugins/search.md

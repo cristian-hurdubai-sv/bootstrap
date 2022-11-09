@@ -20,6 +20,7 @@ import {
   CatalogIcon,
   Content,
   DocsIcon,
+  UserIcon,
   Header,
   Page,
 } from '@backstage/core-components';
@@ -69,6 +70,11 @@ const SearchPage = () => {
                   value: 'techdocs',
                   name: 'Documentation',
                   icon: <DocsIcon />,
+                },
+                {
+                  value: 'random-user',
+                  name: 'RandomUser',
+                  icon: <UserIcon />,
                 },
               ]}
             />

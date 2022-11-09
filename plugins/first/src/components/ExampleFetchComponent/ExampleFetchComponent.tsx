@@ -3,6 +3,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Table, TableColumn, Progress } from '@backstage/core-components';
 import Alert from '@material-ui/lab/Alert';
 import useAsync from 'react-use/lib/useAsync';
+import {
+  FirstApiOptions,
+  FirstApiResult,
+  RandomUserItem,
+  firstApiRef,
+} from '../../api';
+import { useApi } from '@backstage/core-plugin-api';
 
 const useStyles = makeStyles({
   avatar: {
@@ -12,31 +19,11 @@ const useStyles = makeStyles({
   },
 });
 
-type User = {
-  gender: string; // "male"
-  name: {
-    title: string; // "Mr",
-    first: string; // "Duane",
-    last: string; // "Reed"
-  };
-  location: object; // {street: {number: 5060, name: "Hickory Creek Dr"}, city: "Albany", state: "New South Wales",…}
-  email: string; // "duane.reed@example.com"
-  login: object; // {uuid: "4b785022-9a23-4ab9-8a23-cb3fb43969a9", username: "blackdog796", password: "patch",…}
-  dob: object; // {date: "1983-06-22T12:30:23.016Z", age: 37}
-  registered: object; // {date: "2006-06-13T18:48:28.037Z", age: 14}
-  phone: string; // "07-2154-5651"
-  cell: string; // "0405-592-879"
-  id: {
-    name: string; // "TFN",
-    value: string; // "796260432"
-  };
-  picture: { medium: string }; // {medium: "https://randomuser.me/api/portraits/men/95.jpg",…}
-  nat: string; // "AU"
+type DenseTableProps = {
+  users: RandomUserItem[];
 };
 
-type DenseTableProps = {
-  users: User[];
-};
+const PAGE_SIZE = 30;
 
 export const DenseTable = ({ users }: DenseTableProps) => {
   const classes = useStyles();
@@ -52,12 +39,12 @@ export const DenseTable = ({ users }: DenseTableProps) => {
     return {
       avatar: (
         <img
-          src={user.picture.medium}
+          src={user.avatar}
           className={classes.avatar}
-          alt={user.name.first}
+          alt={user.first_name}
         />
       ),
-      name: `${user.name.first} ${user.name.last}`,
+      name: `${user.first_name} ${user.last_name}`,
       email: user.email,
       nationality: user.nat,
     };
@@ -65,8 +52,18 @@ export const DenseTable = ({ users }: DenseTableProps) => {
 
   return (
     <Table
-      title="Example User List (fetching data from randomuser.me)"
-      options={{ search: false, paging: false }}
+      title="Database User List"
+      options={{
+        search: false,
+        pageSize: PAGE_SIZE,
+        padding: 'dense',
+        sorting: true,
+        draggable: false,
+        paging: true,
+        filtering: true,
+        debounceInterval: 500,
+        filterCellStyle: { padding: '0 16px 0 20px' },
+      }}
       columns={columns}
       data={data}
     />
@@ -74,11 +71,7 @@ export const DenseTable = ({ users }: DenseTableProps) => {
 };
 
 export const ExampleFetchComponent = () => {
-  const { value, loading, error } = useAsync(async (): Promise<User[]> => {
-    const response = await fetch('https://randomuser.me/api/?results=20');
-    const data = await response.json();
-    return data.results;
-  }, []);
+  const { value, loading, error } = getApiData();
 
   if (loading) {
     return <Progress />;
@@ -86,5 +79,45 @@ export const ExampleFetchComponent = () => {
     return <Alert severity="error">{error.message}</Alert>;
   }
 
-  return <DenseTable users={value || []} />;
+  return <DenseTable users={value?.data || []} />;
 };
+
+export const getApiData = () => {
+  const firstApi = useApi(firstApiRef);
+  return useAsync(async () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const query: any = {};
+    // Display the key/value pairs
+    for (const [key, value] of searchParams.entries()) {
+      query[key] = value;
+    }
+    let result = {} as FirstApiResult;
+    const id = searchParams.get("id") || null;
+    if (id) {
+      result = await firstApi.getById(id || "");
+    } else {
+      const page = query?.page ?? 0;
+      const pageSize = query?.pageSize ?? PAGE_SIZE;
+      result = await firstApi.getAll({
+        offset: page * pageSize,
+        limit: 10000, // pageSize,
+        orderBy:
+          query?.orderBy &&
+          ({
+            field: query.orderBy.field,
+            direction: query.orderDirection,
+          } as FirstApiOptions['orderBy']),
+        filters: query?.filters?.map((filter: { column: { field: any; }; value: any; }) => ({
+          field: filter.column.field!,
+          value: `*${filter.value}*`,
+        })) as FirstApiOptions['filters'],
+      });
+    }
+
+    return {
+      data: result.items as RandomUserItem[],
+      totalCount: result.totalCount,
+      page: Math.floor(result.offset / result.limit),
+    };
+  }, []);
+}

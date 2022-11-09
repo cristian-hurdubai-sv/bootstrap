@@ -13,19 +13,19 @@ import { ExampleFetchComponent } from '../ExampleFetchComponent';
 
 export const ExampleComponent = () => (
   <Page themeId="tool">
-    <Header title="Welcome to first!" subtitle="Optional subtitle">
-      <HeaderLabel label="Owner" value="Team X" />
+    <Header title="Welcome to my first plugin!" subtitle="This plugin will list backend users from a database">
+      <HeaderLabel label="Owner" value="Team First" />
       <HeaderLabel label="Lifecycle" value="Alpha" />
     </Header>
     <Content>
-      <ContentHeader title="Plugin title">
-        <SupportButton>A description of your plugin goes here.</SupportButton>
+      <ContentHeader title="Users">
+        <SupportButton>My first plugin that uses a database to list users</SupportButton>
       </ContentHeader>
       <Grid container spacing={3} direction="column">
         <Grid item>
           <InfoCard title="Information card">
             <Typography variant="body1">
-              All content should be wrapped in a card like this.
+              This plugin uses data from an external source (randomuser.me) that its being saved in the database; to be later used in the app.
             </Typography>
           </InfoCard>
         </Grid>

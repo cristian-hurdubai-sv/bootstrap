@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: first-plugin
+  description: A demo plugin
+  # Example for optional annotations
+  annotations:
+    github.com/project-slug: cristian-hurdubai-sv/plugin-first
+spec:
+  type: website
+  owner: cristian.hurdubai@softvision.com
+  lifecycle: experimental
+  dependsOn:
+    - api:first-backend-plugin
