@@ -27,8 +27,9 @@ We start with the instructions provided in Backstage’s Create a Backstage Plug
 Running:
 ```bash
 yarn new --select backend-plugin
+
 ```
-<img data-zoomable src="../assets/backend_plugin_created.jpg" alt="backend-plugin-created" />
+<img data-zoomable src="../../assets/backend_plugin_created.jpeg" alt="backend-plugin-created" />
 
 will create our new backend plugin.
 
@@ -403,7 +404,7 @@ export default async function createPlugin(
 }
 ```
 
-and add the dependency inside /packages/backedn/package.json
+and add the dependency inside /packages/backend/package.json
 ```json
 "@internal/plugin-random-user-backend": "^0.1.0",
 ```
@@ -432,7 +433,7 @@ The process for creating a frontend plugin is a little bit different because aft
 ```bash
 yarn new --select plugin
 ```
-<img data-zoomable src="../assets/frontend_plugin_created.jpg" alt="frontend-plugin-created" />
+<img data-zoomable src="../../assets/frontend_plugin_created.jpeg" alt="frontend-plugin-created" />
 
 that's it; run the command and you'll see the plugin available `http:localhost:3000/random-user`
 ```shell
@@ -786,8 +787,9 @@ export const getRandomUserData = () => {
 
 ```
 
-## III. Expose into catalog
-Since we created these 2 plugins we need to expose the API using openAPI schema and to link this 2 plugins together in order to display inside Catalog
+## III. Add descriptor files
+Since we created these 2 plugins and we have defined an openAPI schema we should add a descriptor file `catalog-info.yaml` for each of them, in order to display them inside the catalog area
+
 Add the following file `plugins/random-user/catalog-info.yaml` 
 ```yaml
 apiVersion: backstage.io/v1alpha1
@@ -924,4 +926,15 @@ spec:
               example: "ok | nok"
             message:
               type: string
+```
+
+After this you update the load their locations via app-config.yaml
+```yaml
+catalog:
+  locations:
+    ...
+    - type: file
+      target: ../../plugins/first-backend/catalog-info.yaml
+    - type: file
+      target: ../../plugins/first/catalog-info.yaml 
 ```
