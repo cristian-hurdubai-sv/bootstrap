@@ -22,12 +22,14 @@ It provides a set of common apis and it has a pluggable architecture that helps 
     1. Velocity:
         - Spawning a boilerplate application for a new starting team to develop software. (create new service, API, website etc)
         - Getting people fast on track with what current application is doing (All documentation is available into one single point of contact; there is no need to "search" for in different places)
-        - Checking logs; verify pipulines...
+        - Checking logs; verify pipelines...
         - Onboard new people.
-    2. Entend:
-        - Can be eaasily extended by adding community and/or self-developed plugins. Backstage has a decoupled architecture
-    3. Organized:
+    2. Extendibility:
+        - Can be easily extended by adding community and/or self-developed plugins. Backstage has a decoupled architecture
+    3. Organized system:
         - Getting to know what teams are responsible for which software is a always good thing.
+        - One centralized software catalog
+
 
 ### 5. What are the main features of backstage out of the box
     - Creates new software in a matter of seconds (templating)
