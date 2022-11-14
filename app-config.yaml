@@ -3,7 +3,7 @@ app:
   baseUrl: http://localhost:3000
 
 organization:
-  name: Softvision
+  name: POC
 
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
@@ -29,8 +29,8 @@ backend:
   # This is for local development only, it is not recommended to use this in production
   # The production database configuration is stored in app-config.production.yaml
   database:
-    # client: better-sqlite3
-    # connection: ':memory:'
+  #   client: better-sqlite3
+  #   connection: ':memory:'
     # config options: https://node-postgres.com/api/client
     client: pg
     # if you want to use only 1 database for all plugins uncomment the following line
@@ -42,10 +42,10 @@ backend:
       user: ${POSTGRES_USER}
       database: ${POSTGRES_USER}
       password: ${POSTGRES_PASSWORD}
-      # https://node-postgres.com/features/ssl
-      #ssl: require # see https://www.postgresql.org/docs/current/libpq-ssl.html Table 33.1. SSL Mode Descriptions (e.g. require)
-        #ca: # if you have a CA file and want to verify it you can uncomment this section
-        #$file: <file-path>/ca/server.crt
+    #   # https://node-postgres.com/features/ssl
+    #   #ssl: require # see https://www.postgresql.org/docs/current/libpq-ssl.html Table 33.1. SSL Mode Descriptions (e.g. require)
+    #     #ca: # if you have a CA file and want to verify it you can uncomment this section
+    #     #$file: <file-path>/ca/server.crt
   cache:
     store: memory
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
@@ -119,6 +119,12 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+    # - type: file
+    #   target: ../../catalog-info.yaml
+    - type: file
+      target: ../../plugins/first-backend/catalog-info.yaml
+    - type: file
+      target: ../../plugins/first/catalog-info.yaml 
 
     ## Uncomment these lines to add more example data
     # - type: url

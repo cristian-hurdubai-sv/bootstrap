@@ -1,7 +1,7 @@
 ---
-id: Definitions
-title: What is backstage
-sidebar_label: Definitions
+id: Thoughts
+title: Basic Thoughts
+sidebar_label: Basic thoughts
 description: Short conclusion points about backstage
 ---
 

@@ -14,5 +14,5 @@ nav:
   - Plugins: 
     - Creating Plugins: plugins/creating-a-plugin.md
     - Adding Search functionality: plugins/add-search-to-plugin.md
-    - SonarQube: plugins/sonarqube
+    - SonarQube: plugins/sonarqube.md
     - Search: plugins/search.md
